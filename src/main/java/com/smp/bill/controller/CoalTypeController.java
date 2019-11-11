@@ -9,11 +9,8 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -52,4 +49,23 @@ public class CoalTypeController {
         }
         return ResponseEntity.ok(resultModel);
     }
+
+    @ApiOperation(value = "创建煤矿种类信息", notes = "根据CoalTypeEntity实体创建煤矿种类信息")
+    @ApiImplicitParam(name = "coalTypeEntity", value = "煤炭种类实体coalTypeEntity",
+            required = true, dataType = "CoalTypeEntity")
+    @RequestMapping(value = "/savecoaltype", method = RequestMethod.POST)
+    public ResponseEntity<ResultModel> saveCoalType (@Validated @RequestBody CoalTypeEntity coalTypeEntity) {
+        ResultModel resultModel = new ResultModel();
+        try {
+            coalTypeService.save(coalTypeEntity);
+            resultModel.setCode("200");
+            resultModel.setMessage("success");
+        } catch (Exception e) {
+            resultModel.setCode("500");
+            resultModel.setMessage(e.getClass().getName() + ":" + e.getMessage());
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok(resultModel);
+    }
+
 }
